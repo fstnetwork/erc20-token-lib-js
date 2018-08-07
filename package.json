@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "precommit": "pretty-quick --staged",
-    "build": "babel ./index.js --out-file ./dist/index.js && babel ./lib --out-dir ./dist/lib"
+    "build": "rm -rf ./dist/lib ./dist/index.js && babel ./index.js --out-file ./dist/index.js && babel ./lib --out-dir ./dist/lib"
   },
   "repository": {
     "type": "git",
