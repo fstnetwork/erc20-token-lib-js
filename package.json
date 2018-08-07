@@ -35,6 +35,7 @@
     "axios": "^0.18.0",
     "bignumber.js": "^7.2.1",
     "eth-key-lib-js": "https://github.com/funderstoken/eth-key-lib-js",
+    "ethjs-abi": "^0.2.1",
     "keccak": "^1.4.0"
   }
 }
