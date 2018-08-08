@@ -38,6 +38,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bignumber.js": "^7.2.1",
+    "bottleneck": "^2.6.0",
     "eth-key-lib-js": "https://github.com/funderstoken/eth-key-lib-js",
     "ethjs-abi": "^0.2.1",
     "ethjs-account": "^0.1.4",
