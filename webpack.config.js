@@ -32,13 +32,17 @@ module.exports = {
   },
   externals: {
     scrypt: {
-      commonjs: "scrypt"
+      root: "Scrypt",
+      commonjs: "scrypt",
+      commonjs2: "scrypt"
     }
   },
   target: "node",
   output: {
-    filename: "main.js",
-    path: path.resolve(__dirname, "dist")
+    filename: "ERC20Token.js",
+    path: path.resolve(__dirname, "dist"),
+    library: "ERC20Token",
+    libraryTarget: "umd"
   },
   mode: "production"
 };
