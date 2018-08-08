@@ -28,11 +28,7 @@
     "@babel/preset-env": "^7.0.0-beta.54",
     "husky": "^0.14.3",
     "prettier": "^1.14.0",
-    "pretty-quick": "^1.6.0",
-    "rollup": "^0.64.1",
-    "rollup-plugin-commonjs": "^9.1.4",
-    "rollup-plugin-json": "^3.0.0",
-    "rollup-plugin-node-resolve": "^3.3.0"
+    "pretty-quick": "^1.6.0"
   },
   "dependencies": {
     "axios": "^0.18.0",
