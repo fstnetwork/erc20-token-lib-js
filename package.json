@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "precommit": "pretty-quick --staged"
+    "precommit": "pretty-quick --staged",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -22,11 +23,12 @@
   },
   "homepage": "https://github.com/funderstoken/erc20-token-lib-js#readme",
   "devDependencies": {
-    "@babel/cli": "7.0.0-beta.54",
+    "@babel/cli": "^7.0.0-beta.54",
     "@babel/core": "^7.0.0-beta.54",
     "@babel/polyfill": "^7.0.0-beta.54",
     "@babel/preset-env": "^7.0.0-beta.54",
     "babel-loader": "^8.0.0-beta.4",
+    "clean-webpack-plugin": "^0.1.19",
     "husky": "^0.14.3",
     "prettier": "^1.14.0",
     "pretty-quick": "^1.6.0",
