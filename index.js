@@ -34,10 +34,15 @@ export const ERC20Token = function(params) {
   self.totalSupplyHumanNumberString = null;
   self.totalSupplyDecimaledNumberString = null;
 
+  self.infoLoaded = false;
+  self.balanceLoaded = false;
+
+  self.afterAllLoaded = null;
+
   if (notEmpty(params.myAddress)) {
     self.myAddress = params.myAddress;
 
-    getTokenBalance(
+    self.afterAllLoaded = getTokenBalance(
       self.network,
       self.apikey,
       self.tokenAddress,
@@ -46,18 +51,46 @@ export const ERC20Token = function(params) {
       self.balance = balance.balance;
       self.balanceHumanNumberString = balance.balanceHumanNumberString;
       self.balanceDecimaledNumberString = balance.balanceDecimaledNumberString;
+
+      self.balanceLoaded = true;
     });
   }
 
-  getTokenInfo(self.network, self.apikey, self.tokenAddress).then(info => {
-    self.tokenName = info.name;
-    self.symbol = info.symbol;
-    self.decimals = info.decimals;
-    self.totalSupply = info.totalSupply;
-    self.totalSupplyHumanNumberString = info.totalSupplyHumanNumberString;
-    self.totalSupplyDecimaledNumberString =
-      info.totalSupplyDecimaledNumberString;
-  });
+  if (self.afterAllLoaded === null) {
+    self.afterAllLoaded = getTokenInfo(
+      self.network,
+      self.apikey,
+      self.tokenAddress
+    )
+      .then(info => {
+        self.tokenName = info.name;
+        self.symbol = info.symbol;
+        self.decimals = info.decimals;
+        self.totalSupply = info.totalSupply;
+        self.totalSupplyHumanNumberString = info.totalSupplyHumanNumberString;
+        self.totalSupplyDecimaledNumberString =
+          info.totalSupplyDecimaledNumberString;
+
+        self.infoLoaded = true;
+      })
+      .then(() => self);
+  } else {
+    self.afterAllLoaded = self.afterAllLoaded.then(() =>
+      getTokenInfo(self.network, self.apikey, self.tokenAddress)
+        .then(info => {
+          self.tokenName = info.name;
+          self.symbol = info.symbol;
+          self.decimals = info.decimals;
+          self.totalSupply = info.totalSupply;
+          self.totalSupplyHumanNumberString = info.totalSupplyHumanNumberString;
+          self.totalSupplyDecimaledNumberString =
+            info.totalSupplyDecimaledNumberString;
+
+          self.infoLoaded = true;
+        })
+        .then(() => self)
+    );
+  }
 
   self.transfer = function(
     senderPrivateKeyBuffer,
@@ -98,7 +131,7 @@ export const ERC20Token = function(params) {
   };
 
   self.intervalID = null;
-  self.intervalMS = 20000;
+  self.intervalMS = 15000;
   self.autoUpdateMyTokenBalanceEnabled = false;
 
   self.enableAutoUpdateMyTokenBalance = function() {
