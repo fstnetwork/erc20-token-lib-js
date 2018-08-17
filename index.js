@@ -37,31 +37,32 @@ export const ERC20Token = function(params) {
   self.infoLoaded = false;
   self.balanceLoaded = false;
 
-  self.afterAllLoaded = Promise.resolve(true);
+  self.afterAllLoaded = null;
 
   if (notEmpty(params.myAddress)) {
     self.myAddress = params.myAddress;
 
-    self.afterAllLoaded = self.afterAllLoaded.then(() =>
-      getTokenBalance(
-        self.network,
-        self.apikey,
-        self.tokenAddress,
-        self.myAddress
-      ).then(balance => {
-        self.balance = balance.balance;
-        self.balanceHumanNumberString = balance.balanceHumanNumberString;
-        self.balanceDecimaledNumberString =
-          balance.balanceDecimaledNumberString;
+    self.afterAllLoaded = getTokenBalance(
+      self.network,
+      self.apikey,
+      self.tokenAddress,
+      self.myAddress
+    ).then(balance => {
+      self.balance = balance.balance;
+      self.balanceHumanNumberString = balance.balanceHumanNumberString;
+      self.balanceDecimaledNumberString = balance.balanceDecimaledNumberString;
 
-        self.balanceLoaded = true;
-      })
-    );
+      self.balanceLoaded = true;
+    });
   }
 
-  self.afterAllLoaded
-    .then(() =>
-      getTokenInfo(self.network, self.apikey, self.tokenAddress).then(info => {
+  if (self.afterAllLoaded === null) {
+    self.afterAllLoaded = getTokenInfo(
+      self.network,
+      self.apikey,
+      self.tokenAddress
+    )
+      .then(info => {
         self.tokenName = info.name;
         self.symbol = info.symbol;
         self.decimals = info.decimals;
@@ -72,8 +73,24 @@ export const ERC20Token = function(params) {
 
         self.infoLoaded = true;
       })
-    )
-    .then(() => self);
+      .then(() => self);
+  } else {
+    self.afterAllLoaded = self.afterAllLoaded.then(() =>
+      getTokenInfo(self.network, self.apikey, self.tokenAddress)
+        .then(info => {
+          self.tokenName = info.name;
+          self.symbol = info.symbol;
+          self.decimals = info.decimals;
+          self.totalSupply = info.totalSupply;
+          self.totalSupplyHumanNumberString = info.totalSupplyHumanNumberString;
+          self.totalSupplyDecimaledNumberString =
+            info.totalSupplyDecimaledNumberString;
+
+          self.infoLoaded = true;
+        })
+        .then(() => self)
+    );
+  }
 
   self.transfer = function(
     senderPrivateKeyBuffer,
