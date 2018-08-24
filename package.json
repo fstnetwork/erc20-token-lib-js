@@ -1,6 +1,6 @@
 {
   "name": "erc20-token-lib",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "ERC20 helper functions for nodejs / web",
   "main": "index.js",
   "scripts": {
