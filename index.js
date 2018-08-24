@@ -49,6 +49,7 @@ export const ERC20Token = function(params) {
     self.myAddress = params.myAddress;
 
     self.afterAllLoaded = getTokenBalance(
+      limiter,
       self.network,
       self.apikey,
       self.tokenAddress,
