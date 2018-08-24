@@ -2,6 +2,12 @@ import getTokenInfo from "./lib/erc20Token/getTokenInfo";
 import getTokenBalance from "./lib/erc20Token/getTokenBalance";
 import transferToken from "./lib/erc20Token/transferToken";
 
+import Bottleneck from "bottleneck";
+
+const limiter = new Bottleneck({
+  maxConcurrent: 4
+});
+
 function notEmpty(o) {
   return o !== undefined && o !== null && o !== "";
 }
@@ -58,6 +64,7 @@ export const ERC20Token = function(params) {
 
   if (self.afterAllLoaded === null) {
     self.afterAllLoaded = getTokenInfo(
+      limiter,
       self.network,
       self.apikey,
       self.tokenAddress
@@ -76,7 +83,7 @@ export const ERC20Token = function(params) {
       .then(() => self);
   } else {
     self.afterAllLoaded = self.afterAllLoaded.then(() =>
-      getTokenInfo(self.network, self.apikey, self.tokenAddress)
+      getTokenInfo(limiter, self.network, self.apikey, self.tokenAddress)
         .then(info => {
           self.tokenName = info.name;
           self.symbol = info.symbol;
@@ -99,6 +106,7 @@ export const ERC20Token = function(params) {
     extraParams = {}
   ) {
     return transferToken(
+      limiter,
       self.network,
       self.apikey,
       senderPrivateKeyBuffer,
@@ -115,6 +123,7 @@ export const ERC20Token = function(params) {
     }
 
     return getTokenBalance(
+      limiter,
       self.network,
       self.apikey,
       self.tokenAddress,
