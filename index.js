@@ -1,11 +1,12 @@
 import getTokenInfo from "./lib/erc20Token/getTokenInfo";
 import getTokenBalance from "./lib/erc20Token/getTokenBalance";
 import transferToken from "./lib/erc20Token/transferToken";
+import validateSmartContract from './lib/erc20Token/getSmartContract';
 
 import Bottleneck from "bottleneck";
 
 const limiter = new Bottleneck({
-  maxConcurrent: 4
+  maxConcurrent: 1
 });
 
 function notEmpty(o) {
@@ -42,63 +43,89 @@ export const ERC20Token = function(params) {
 
   self.infoLoaded = false;
   self.balanceLoaded = false;
+  self.isERC20 = false;
 
   self.afterAllLoaded = null;
 
-  if (notEmpty(params.myAddress)) {
-    self.myAddress = params.myAddress;
+  validateSmartContract(
+    limiter,
+    self.network,
+    self.apikey,
+    self.tokenAddress,
+  ).then(result => {
+    if (!result) {
+      throw new Error("input token address is not an erc20 token contract");
+    } else {
+      self.isERC20 = true;
 
-    self.afterAllLoaded = getTokenBalance(
+      if (notEmpty(params.myAddress)) {
+        self.myAddress = params.myAddress;
+
+        self.afterAllLoaded = getTokenBalance(
+          limiter,
+          self.network,
+          self.apikey,
+          self.tokenAddress,
+          self.myAddress,
+        ).then(balance => {
+          self.balance = balance.balance;
+          self.balanceHumanNumberString = balance.balanceHumanNumberString;
+          self.balanceDecimaledNumberString =
+            balance.balanceDecimaledNumberString;
+
+          self.balanceLoaded = true;
+        });
+      }
+
+      if (self.afterAllLoaded === null) {
+        self.afterAllLoaded = getTokenInfo(
+          limiter,
+          self.network,
+          self.apikey,
+          self.tokenAddress,
+        )
+          .then(info => {
+            self.tokenName = info.name;
+            self.symbol = info.symbol;
+            self.decimals = info.decimals;
+            self.totalSupply = info.totalSupply;
+            self.totalSupplyHumanNumberString =
+              info.totalSupplyHumanNumberString;
+            self.totalSupplyDecimaledNumberString =
+              info.totalSupplyDecimaledNumberString;
+
+            self.infoLoaded = true;
+          })
+          .then(() => self);
+      } else {
+        self.afterAllLoaded = self.afterAllLoaded.then(() =>
+          getTokenInfo(limiter, self.network, self.apikey, self.tokenAddress)
+            .then(info => {
+              self.tokenName = info.name;
+              self.symbol = info.symbol;
+              self.decimals = info.decimals;
+              self.totalSupply = info.totalSupply;
+              self.totalSupplyHumanNumberString =
+                info.totalSupplyHumanNumberString;
+              self.totalSupplyDecimaledNumberString =
+                info.totalSupplyDecimaledNumberString;
+
+              self.infoLoaded = true;
+            })
+            .then(() => self),
+        );
+      }
+    }
+  });
+
+  self.validErc20Contract = function() {
+    return validateSmartContract(
       limiter,
       self.network,
       self.apikey,
       self.tokenAddress,
-      self.myAddress
-    ).then(balance => {
-      self.balance = balance.balance;
-      self.balanceHumanNumberString = balance.balanceHumanNumberString;
-      self.balanceDecimaledNumberString = balance.balanceDecimaledNumberString;
-
-      self.balanceLoaded = true;
-    });
-  }
-
-  if (self.afterAllLoaded === null) {
-    self.afterAllLoaded = getTokenInfo(
-      limiter,
-      self.network,
-      self.apikey,
-      self.tokenAddress
-    )
-      .then(info => {
-        self.tokenName = info.name;
-        self.symbol = info.symbol;
-        self.decimals = info.decimals;
-        self.totalSupply = info.totalSupply;
-        self.totalSupplyHumanNumberString = info.totalSupplyHumanNumberString;
-        self.totalSupplyDecimaledNumberString =
-          info.totalSupplyDecimaledNumberString;
-
-        self.infoLoaded = true;
-      })
-      .then(() => self);
-  } else {
-    self.afterAllLoaded = self.afterAllLoaded.then(() =>
-      getTokenInfo(limiter, self.network, self.apikey, self.tokenAddress)
-        .then(info => {
-          self.tokenName = info.name;
-          self.symbol = info.symbol;
-          self.decimals = info.decimals;
-          self.totalSupply = info.totalSupply;
-          self.totalSupplyHumanNumberString = info.totalSupplyHumanNumberString;
-          self.totalSupplyDecimaledNumberString =
-            info.totalSupplyDecimaledNumberString;
-
-          self.infoLoaded = true;
-        })
-        .then(() => self)
     );
-  }
+  };
 
   self.transfer = function(
     senderPrivateKeyBuffer,
