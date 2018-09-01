@@ -6,7 +6,8 @@ import validateSmartContract from "./lib/erc20Token/getSmartContract";
 import Bottleneck from "bottleneck";
 
 const limiter = new Bottleneck({
-  maxConcurrent: 1
+  maxConcurrent: 4,
+  minTime: 250
 });
 
 function notEmpty(o) {
