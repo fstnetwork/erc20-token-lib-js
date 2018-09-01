@@ -1,6 +1,6 @@
 {
   "name": "erc20-token-lib",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "ERC20 helper functions for nodejs / web",
   "main": "index.js",
   "scripts": {
@@ -23,23 +23,23 @@
   },
   "homepage": "https://github.com/funderstoken/erc20-token-lib-js#readme",
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.54",
-    "@babel/core": "^7.0.0-beta.54",
-    "@babel/polyfill": "^7.0.0-beta.54",
-    "@babel/preset-env": "^7.0.0-beta.54",
-    "babel-loader": "^8.0.0-beta.4",
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "babel-loader": "^8.0.0",
     "clean-webpack-plugin": "^0.1.19",
     "husky": "^0.14.3",
-    "prettier": "^1.14.0",
+    "prettier": "^1.14.2",
     "pretty-quick": "^1.6.0",
-    "webpack": "^4.16.5",
+    "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0"
   },
   "dependencies": {
     "axios": "^0.18.0",
     "bignumber.js": "^7.2.1",
-    "bottleneck": "^2.6.0",
-    "eth-key-lib-js": "https://github.com/funderstoken/eth-key-lib-js",
+    "bottleneck": "^2.8.0",
+    "eth-key-lib-js": "https://github.com/funderstoken/eth-key-lib-js#ce132df81c2f6b715e0c2b0ce2211a90bebca507",
     "ethjs-abi": "^0.2.1",
     "ethjs-account": "^0.1.4",
     "keccak": "^1.4.0"
