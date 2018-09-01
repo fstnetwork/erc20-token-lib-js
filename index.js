@@ -1,7 +1,7 @@
 import getTokenInfo from "./lib/erc20Token/getTokenInfo";
 import getTokenBalance from "./lib/erc20Token/getTokenBalance";
 import transferToken from "./lib/erc20Token/transferToken";
-import validateSmartContract from './lib/erc20Token/getSmartContract';
+import validateSmartContract from "./lib/erc20Token/getSmartContract";
 
 import Bottleneck from "bottleneck";
 
@@ -51,7 +51,7 @@ export const ERC20Token = function(params) {
     limiter,
     self.network,
     self.apikey,
-    self.tokenAddress,
+    self.tokenAddress
   ).then(result => {
     if (!result) {
       throw new Error("input token address is not an erc20 token contract");
@@ -66,7 +66,7 @@ export const ERC20Token = function(params) {
           self.network,
           self.apikey,
           self.tokenAddress,
-          self.myAddress,
+          self.myAddress
         ).then(balance => {
           self.balance = balance.balance;
           self.balanceHumanNumberString = balance.balanceHumanNumberString;
@@ -82,7 +82,7 @@ export const ERC20Token = function(params) {
           limiter,
           self.network,
           self.apikey,
-          self.tokenAddress,
+          self.tokenAddress
         )
           .then(info => {
             self.tokenName = info.name;
@@ -112,7 +112,7 @@ export const ERC20Token = function(params) {
 
               self.infoLoaded = true;
             })
-            .then(() => self),
+            .then(() => self)
         );
       }
     }
@@ -123,7 +123,7 @@ export const ERC20Token = function(params) {
       limiter,
       self.network,
       self.apikey,
-      self.tokenAddress,
+      self.tokenAddress
     );
   };
 
