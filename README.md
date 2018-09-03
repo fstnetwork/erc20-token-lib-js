@@ -72,15 +72,15 @@ aERC20Token.afterAllLoaded.then(aERC20Token => {
 }
 ```
 
-#### Trasfer Token
+#### Transfer Token
 
-(Please refer to [`eth-key-lib-js`](https://github.com/funderstoken/eth-key-lib-js) to generate private keys)
+(Please refer to [`eth-key-lib-js`](https://github.com/funderstoken/eth-key-lib-js) to fetch private keys)
 
 ```js
 aERC20Token.transfer(
   '<EndUserPrivateKeyBuffer>',
   '<ReceiverAddrses>',
-  '<trasferringValueDecimaledNumberString>'
+  '<transferringValueDecimaledNumberString>'
 ).then(txhash => console.log(txhash));
 
 ```
